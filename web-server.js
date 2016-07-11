@@ -201,12 +201,14 @@ function create_config_route(queues, callback) {
 function create_images_database(callback) {
 
     async.waterfall([
+        log_in,
         getNames
         ],function(names_list, callback){
             var name, cpt = 0;
             async.each(names_list,function(name, callback){
                 if(cpt<names_list.length){
                     async.waterfall([
+                        log_in,
                         async.apply(getPngCode, name)
                         ],function(name, png){
                             var b64 = png.data.replace(/^data:image\/png;base64,/,"");
@@ -296,20 +298,15 @@ function run_app(err, results) {
                             fs.writeFile('app/static/'+name+'.png',b64,"base64");
                         });
                     cpt++;
-                    if(cpt==names_list.length) console.log("Images database refreshed");
+                    if(cpt==10) console.log("Images database refreshed.");
                 }
-                else {
-                    callback()
-                }
+                else callback()
             }, function(err){
                 if(err){
                     console.log("Problem fetching images")
                 }
             });
-
-            },function(err){
-                callback(null);
-            });
+        });
     },300000);
 
 };
