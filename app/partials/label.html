@@ -102,17 +102,15 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
             <div class="col-md-12 col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading" id="panhead" data-toggle="popover"
-                        title="Step 3a | person name" data-placement="bottom"
-                        data-content="Double check that the name is correct." data-trigger="manual">
+                        title="Person name" data-placement="bottom"
+                        data-content="A little reminder of the person name." data-trigger="manual">
                         <label id="label_name"></label>
                     </div>
-                    <div class="panel-body" id="panbody" data-toggle="popover"
-                        title="Step 3b | face" data-placement="left"
-                        data-content="Double check that the bounding box is correct. It should contain the whole head whenever possible." data-trigger="manual">
+                    <div class="panel-body" id="panbody">
                         <div class="col-md-8 col-xs-12">
                             <div id="video-container"
-                                data-toggle="popover" title="Step 2 | bounding box" data-placement="left"
-                                data-content="Draw a bounding box around face on the video. You may browse the video to find a location where the face is more frontal."
+                                data-toggle="popover" title="Video sequence" data-placement="left"
+                                data-content="This is the video sequence where you have to determine what is the situation of the person."
                                 data-trigger="manual" ng-mouseup="model.updateValidInput()">
                                 <video id="player" cm-video-player ng-src={{model.video}} height="360px" crossorigin="anonymous"></video>
                                 <div class="controls">
@@ -142,7 +140,9 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                         </div>
                         <div class="col-md-4 col-xs-12" style="margin-top:20px;">
                             <div id="shotImage" style="float:left; width:100%">
-                                <img id="shot" src="../img/default.jpg" class="img-responsive" width="100%"/>
+                                <img id="shot" src="../img/default.jpg" class="img-responsive" width="100%" data-toggle="popover"
+                                title="Face" data-placement="left"
+                                data-content="Here is your face reference to search the person." data-trigger="manual"/>
                             </div>
                         </div>
                     </div>
@@ -152,8 +152,8 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                                 <div class="btn-group" role="group">
                                     <button type="button" id="btndk" class="btn btn-default btn-lg" ng-click="model.saveQueueElement('?')"
                                             data-toggle="popover"
-                                            title="Step 1d | not sure"
-                                            data-placement="top"
+                                            title="Not sure"
+                                            data-placement="bottom"
                                             data-content="Use this when you are not sure what to decide. It is always better to say 'I don't know' than making a wrong guess."
                                             data-trigger="manual">
                                             <img src='../img/dontKnow.png' class="img-responsive" style="height:217px"/> I am not sure
@@ -162,9 +162,9 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                                 <div class="btn-group" role="group">
                                     <button type="button" id="btnno" class="btn btn-danger btn-lg" ng-click="model.saveQueueElement('no')"
                                             data-toggle="popover"
-                                            title="Step 1c | wrong person"
-                                            data-placement="top"
-                                            data-content="Use this when the person whose name is proposed is not visible."
+                                            title="Absent person"
+                                            data-placement="bottom"
+                                            data-content="Use this when the person is not in the sequence."
                                             data-trigger="manual">
                                             <img src='../img/noFace.png' class="img-responsive"/>Absent person
                                     </button>
@@ -172,9 +172,9 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                                  <div class="btn-group" role="group">
                                     <button type="button" id="btn" class="btn btn-warning btn-lg" ng-click="model.saveQueueElement('face')"
                                             data-toggle="popover"
-                                            title="Step 1c | wrong person"
-                                            data-placement="top"
-                                            data-content="Use this when the person whose name is proposed is not visible."
+                                            title="Silent person"
+                                            data-placement="bottom"
+                                            data-content="Use this when the person is in the sequence but is not speaking."
                                             data-trigger="manual">
                                             <img src='../img/silentFace.png' class="img-responsive"/> Silent Person
                                     </button>
@@ -182,9 +182,9 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                                 <div class="btn-group" role="group">
                                     <button type="button" id="confirm" class="btn btn-success btn-lg"
                                     ng-click="model.saveQueueElement('talking_face')" style="margin:auto;"
-                                    data-toggle="popover" title="Step 4 | validation" data-placement="bottom"
-                                    data-content="Use this once your job is done." data-trigger="manual">
-                                     <img src='../img/speakingFace.png' class="img-responsive"/>Speaking person
+                                    data-toggle="popover" title="Speaking and visible" data-placement="bottom"
+                                    data-content="Use this when the person is visible AND speaking." data-trigger="manual">
+                                     <img src='../img/speakingFace.png' class="img-responsive"/>Speaking and visible person
                                     </button>
                                 </div>
                             </div>
