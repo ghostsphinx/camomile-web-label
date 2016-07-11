@@ -84,12 +84,10 @@ angular.module('myApp.controllers')
                             $scope.model.restrict_toggle = 2;
                             $scope.model.current_time_temp = $scope.model.q.start;
                             $scope.model.infbndsec = parseFloat($scope.model.q.start || 0);
-                            $scope.model.infbndsec-=5.0;
                             if ($scope.model.infbndsec < 0) {
                                 $scope.model.infbndsec = 0;
                             }
                             $scope.model.supbndsec = parseFloat($scope.model.q.end || 0);
-                            $scope.model.supbndsec+=5.0;
                             if ($scope.model.supbndsec > $scope.model.fullDuration) {
                                 $scope.model.supbndsec = $scope.model.fullDuration;
                             }
