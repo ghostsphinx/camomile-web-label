@@ -150,13 +150,23 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                         <div class="btn-group btn-group-justified" role="group" aria-label="...">
                             <div class="btn-group btn-group-justified" role="group" aria-label="...">
                                 <div class="btn-group" role="group">
+                                    <button type="button" id="btndk" class="btn btn-default btn-lg" ng-click="model.saveQueueElement('?')"
+                                            data-toggle="popover"
+                                            title="Step 1d | not sure"
+                                            data-placement="top"
+                                            data-content="Use this when you are not sure what to decide. It is always better to say 'I don't know' than making a wrong guess."
+                                            data-trigger="manual">
+                                            <img src='../img/dontKnow.png' class="img-responsive" style="height:217px"/> I am not sure
+                                    </button>
+                                </div>
+                                <div class="btn-group" role="group">
                                     <button type="button" id="btnno" class="btn btn-danger btn-lg" ng-click="model.saveQueueElement('no')"
                                             data-toggle="popover"
                                             title="Step 1c | wrong person"
                                             data-placement="top"
                                             data-content="Use this when the person whose name is proposed is not visible."
                                             data-trigger="manual">
-                                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Absent person
+                                            <img src='../img/noFace.png' class="img-responsive"/>Absent person
                                     </button>
                                 </div>
                                  <div class="btn-group" role="group">
@@ -166,17 +176,7 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                                             data-placement="top"
                                             data-content="Use this when the person whose name is proposed is not visible."
                                             data-trigger="manual">
-                                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Silent Person
-                                    </button>
-                                </div>
-                                <div class="btn-group" role="group">
-                                    <button type="button" id="btndk" class="btn btn-default btn-lg" ng-click="model.saveQueueElement('?')"
-                                            data-toggle="popover"
-                                            title="Step 1d | not sure"
-                                            data-placement="top"
-                                            data-content="Use this when you are not sure what to decide. It is always better to say 'I don't know' than making a wrong guess."
-                                            data-trigger="manual">
-                                      <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> I am not sure
+                                            <img src='../img/silentFace.png' class="img-responsive"/> Silent Person
                                     </button>
                                 </div>
                                 <div class="btn-group" role="group">
@@ -184,7 +184,7 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                                     ng-click="model.saveQueueElement('talking_face')" style="margin:auto;"
                                     data-toggle="popover" title="Step 4 | validation" data-placement="bottom"
                                     data-content="Use this once your job is done." data-trigger="manual">
-                                      <span class="glyphicon glyphicon-check" aria-hidden="true"></span> Speaking person
+                                     <img src='../img/speakingFace.png' class="img-responsive"/>Speaking person
                                     </button>
                                 </div>
                             </div>
