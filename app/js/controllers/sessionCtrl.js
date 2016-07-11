@@ -73,24 +73,24 @@ angular.module('myApp.controllers')
 
         $scope.tutorial = function(){
             if(popover == true){
-                $("#entry_input").popover('show');
+                $("#panhead").popover('show');
                 $("#btnnk").popover('show');
                 $("#video-container").popover('show');
                 $("#btnno").popover('show');
                 $("#btndk").popover('show');
-                $("#panhead").popover('show');
-                $("#panbody").popover('show');
+                $("#btn").popover('show');
+                $("#shot").popover('show');
                 $("#confirm").popover('show');
                 popover = !popover;
             }
             else{
-                $("#entry_input").popover('hide');
+                $("#panhead").popover('hide');
                 $("#btnnk").popover('hide');
                 $("#video-container").popover('hide');
                 $("#btnno").popover('hide');
                 $("#btndk").popover('hide');
-                $("#panhead").popover('hide');
-                $("#panbody").popover('hide');
+                $("#btn").popover('hide');
+                $("#shot").popover('hide');
                 $("#confirm").popover('hide');
                 popover = !popover;
             }
