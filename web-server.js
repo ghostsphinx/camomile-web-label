@@ -204,14 +204,11 @@ function create_images_database(callback) {
         getNames
         ],function(names_list, callback){
             var name, cpt = 0;
-            console.log("1");
             async.each(names_list,function(name, callback){
-                console.log("2");
                 if(cpt<names_list.length){
                     async.waterfall([
                         async.apply(getPngCode, name)
                         ],function(name, png){
-                            console.log("3");
                             var b64 = png.data.replace(/^data:image\/png;base64,/,"");
                             fs.writeFile('app/static/'+name+'.png',b64,"base64");
                         });
