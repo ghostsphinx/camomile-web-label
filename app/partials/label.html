@@ -156,7 +156,17 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                                             data-placement="top"
                                             data-content="Use this when the person whose name is proposed is not visible."
                                             data-trigger="manual">
-                                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Wrong person
+                                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Absent person
+                                    </button>
+                                </div>
+                                 <div class="btn-group" role="group">
+                                    <button type="button" id="btn" class="btn btn-warning btn-lg" ng-click="model.saveQueueElement('face')"
+                                            data-toggle="popover"
+                                            title="Step 1c | wrong person"
+                                            data-placement="top"
+                                            data-content="Use this when the person whose name is proposed is not visible."
+                                            data-trigger="manual">
+                                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Silent Person
                                     </button>
                                 </div>
                                 <div class="btn-group" role="group">
@@ -174,7 +184,7 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                                     ng-click="model.saveQueueElement('talking_face')" style="margin:auto;"
                                     data-toggle="popover" title="Step 4 | validation" data-placement="bottom"
                                     data-content="Use this once your job is done." data-trigger="manual">
-                                      <span class="glyphicon glyphicon-check" aria-hidden="true"></span> Save
+                                      <span class="glyphicon glyphicon-check" aria-hidden="true"></span> Speaking person
                                     </button>
                                 </div>
                             </div>
