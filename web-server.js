@@ -206,13 +206,14 @@ function create_images_database(callback) {
         getNames
         ],function(names_list, callback){
             var name, cpt = 0;
-
+            console.log("1");
             async.each(names_list,function(name, callback){
+                console.log("2");
                 if(cpt<names_list.length){
                     async.waterfall([
-                        log_in,
                         async.apply(getPngCode, name)
                         ],function(name, png){
+                            console.log("3");
                             var b64 = png.data.replace(/^data:image\/png;base64,/,"");
                             fs.writeFile('app/static/'+name+'.png',b64,"base64");
                         });
@@ -284,12 +285,44 @@ function run_app(err, results) {
     //console.log('   * PyAnnote API --> ' + pyannote_api);
     //console.log(yamlObject.camomile);
 
+    setInterval(function(){
+        async.waterfall([
+        log_in,
+        getNames
+        ],function(names_list, callback){
+            var name, cpt = 0;
+            async.each(names_list,function(name, callback){
+                if(cpt<names_list.length){
+                    async.waterfall([
+                        log_in,
+                        async.apply(getPngCode, name)
+                        ],function(name, png){
+                            var b64 = png.data.replace(/^data:image\/png;base64,/,"");
+                            fs.writeFile('app/static/'+name+'.png',b64,"base64");
+                        });
+                    cpt++;
+                    if(cpt==names_list.length) console.log("Images database refreshed");
+                }
+                else {
+                    callback()
+                }
+            }, function(err){
+                if(err){
+                    console.log("Problem fetching images")
+                }
+            });
+
+            },function(err){
+                callback(null);
+            });
+    },300000);
+
 };
 
 // this is where all these functions are actually called, in this order:
 // log in, create queues, create route /config, log out, create /app/config.js
 // and (then only) run the app
 async.waterfall(
-    [log_in, getAllQueues, create_config_route, create_images_database, log_out, create_config_file],
+    [log_in, getAllQueues, create_config_route, create_images_database, create_config_file, log_out],
     run_app
 );
