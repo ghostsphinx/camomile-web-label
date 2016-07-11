@@ -1,0 +1,189 @@
+<div ng-controller="labelCtrl" ng-show='isLogged()' ng-init="(model.videoPath != '') ? model.popQueueElement() : '' ">
+<!-- Modal -->
+    <div class="modal fade" id="streamModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" onclick="eraseTest()" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Streaming server</h4>
+                </div>
+                <div class="modal-body">
+                  <p>
+                    Because usage agreements do not allow streaming videos directly to the participants, each participant must install a streaming server in their own facilities.
+                  </p>
+                  <h4>Setting up your own streaming server</h4>
+                  <p>
+                    <ul>
+                      <li>
+                        Install NodeJS <code>http-server</code> by following these <a href="https://github.com/indexzero/http-server">instructions</a>.
+                      </li>
+                      <li>
+                        Make sure videos from the three corpora (INA, DW and 3-24) are organized as follows in the same directory (hereafter denoted __ROOT__):
+  <pre>__ROOT__/INA/snowden/F2_TS/*/*.mp4
+__ROOT__/INA/snowden/F5_TS/*/*.mp4
+__ROOT__/DW/DW-news-DE/*.mp4
+__ROOT__/DW/DW-news-EN/*.mp4
+__ROOT__/DW/Euromaxx-EN/*.mp4
+__ROOT__/3-24/*.mp4</pre>
+                      </li>
+                      <li>
+                        Run <code>http-server</code> to server the "mp4" videos:
+                        <pre>
+$ http-server -d false -i false --cors —c __ROOTDIR__
+Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
+                      </li>
+                      <li>
+                        Type in the URL of the streaming server (e.g. <code>http//localhost:8080</code>):
+                        <div ng-controller="ParameterButtonCtrl">
+                            <form id="save">
+                                <input id="localServerInput" type="text" class="form-control" ng-model="model.videoPath" ng-blur="saveVideoPreferences()">
+                            </form>
+                        </div>
+                      </li>
+                    </ul>
+                  </p>
+
+                  <h4>Testing the streaming server</h4>
+                    <p>
+                      Pressing the Test button below will try to seek a specific frame of three different videos of the test set (one for each corpus.)<br/>
+                      If the actual frame correspond to the expected screenshot, then you are good to go!
+                    </p>
+                    <table class="table">
+                    <tr>
+                        <th>
+                        </th>
+                      <th>
+                        3-24
+                      </th>
+                      <th>
+                        DW
+                      </th>
+                      <th>
+                        INA
+                      </th>
+                    </tr>
+                    <tr>
+                        <td>
+                        <button type="button" class="btn btn-default" onclick="streamTest()">Test</button>
+                        </td>
+                        <td>
+                            <img src="../img/1256.png" style="height:80px; margin-left:15px;">
+                        </td>
+                        <td>
+                            <img src="../img/028.png" style="height:80px; margin-left:15px;">
+                        </td>
+                        <td>
+                            <img src="../img/0649.png" style="height:80px; margin-left:15px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <div id="videoTest1" style="margin-top:50px;"></div>
+                        </td>
+                        <td>
+                            <div id="videoTest2" style="margin-top:50px;"></div>
+                        </td>
+                        <td>
+                            <div id="videoTest3" style="margin-top:50px;"></div>
+                        </td>
+                    </tr>
+                    </table>
+                    <label style="position:relative; height:40px;"></label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="model.popQueueElement()" data-dismiss="modal">Let's go!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row top-padding">
+            <div class="col-md-12 col-xs-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading" id="panhead" data-toggle="popover"
+                        title="Step 3a | person name" data-placement="bottom"
+                        data-content="Double check that the name is correct." data-trigger="manual">
+                        <label id="label_name"></label>
+                    </div>
+                    <div class="panel-body" id="panbody" data-toggle="popover"
+                        title="Step 3b | face" data-placement="left"
+                        data-content="Double check that the bounding box is correct. It should contain the whole head whenever possible." data-trigger="manual">
+                        <div class="col-md-8 col-xs-12">
+                            <div id="video-container"
+                                data-toggle="popover" title="Step 2 | bounding box" data-placement="left"
+                                data-content="Draw a bounding box around face on the video. You may browse the video to find a location where the face is more frontal."
+                                data-trigger="manual" ng-mouseup="model.updateValidInput()">
+                                <video id="player" cm-video-player ng-src={{model.video}} height="360px" crossorigin="anonymous"></video>
+                                <div class="controls">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <div id="play-button">
+                                                <button type="button" class="video-control" id="play-pause" ng-click="model.toggle_play()">
+                                                {{ model.play_label }}
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div id="control-bar" title="Drag to reference frame">
+                                                <div id="controlsoverlay">
+                                                    <input width="100%" type="range" id="seek-bar" min="{{ model.infbndsec }}" max="{{ model.supbndsec }}" step="{{ (model.supbndsec - model.infbndsec) / 400 }}" ng-model="model.current_time">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div id="time-display" style="left:30px; top:0px;">
+                                                <label>{{ model.current_time_display }}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xs-12" style="margin-top:20px;">
+                            <div id="shotImage" style="float:left; width:100%">
+                                <img id="shot" src="../img/default.jpg" class="img-responsive" width="100%"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                            <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                                <div class="btn-group" role="group">
+                                    <button type="button" id="btnno" class="btn btn-danger btn-lg" ng-click="model.saveQueueElement('no')"
+                                            data-toggle="popover"
+                                            title="Step 1c | wrong person"
+                                            data-placement="top"
+                                            data-content="Use this when the person whose name is proposed is not visible."
+                                            data-trigger="manual">
+                                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Wrong person
+                                    </button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="button" id="btndk" class="btn btn-default btn-lg" ng-click="model.saveQueueElement('?')"
+                                            data-toggle="popover"
+                                            title="Step 1d | not sure"
+                                            data-placement="top"
+                                            data-content="Use this when you are not sure what to decide. It is always better to say 'I don't know' than making a wrong guess."
+                                            data-trigger="manual">
+                                      <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> I am not sure
+                                    </button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="button" id="confirm" class="btn btn-success btn-lg"
+                                    ng-click="model.saveQueueElement('talking_face')" style="margin:auto;"
+                                    data-toggle="popover" title="Step 4 | validation" data-placement="bottom"
+                                    data-content="Use this once your job is done." data-trigger="manual">
+                                      <span class="glyphicon glyphicon-check" aria-hidden="true"></span> Save
+                                    </button>
+                                </div>
+                            </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
