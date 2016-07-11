@@ -125,7 +125,6 @@ angular.module('myApp.controllers')
                 item.output.status = status;
 
                 document.getElementById('shot').src = "../img/default.jpg";
-                document.getElementById("message").innerHTML = "";
 
                 camomileService.enqueue($scope.model.outgoingQueue, item, function (err, data) {
 
