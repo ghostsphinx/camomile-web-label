@@ -4,13 +4,11 @@ var express = require("express"),
     fs = require('fs'),
     request = require('request'),
     async = require('async'),
-    each = require('async-each'),
     sprintf = require('sprintf').sprintf;
 
 
 var YAML = require('yamljs');
-var oauth = require('./oauth')
-var fermata = require('./fermata');
+var fermata = require('fermata');
 var camomileClient = require('./camomile');
  
 // remember cookie
