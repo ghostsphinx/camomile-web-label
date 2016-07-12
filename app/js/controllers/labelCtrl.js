@@ -59,7 +59,8 @@ angular.module('myApp.controllers')
                     $scope.model.updateIsDisplayedVideo(true);
 
                     $scope.model.q = item;
-                    document.getElementById('label_name').innerHTML = $scope.model.q.person_name;
+                    //document.getElementById('label_name').innerHTML = $scope.model.q.person_name;
+                    $('#shotImage').tooltip({title:$scope.model.q.person_name, placement:"left"});
                     document.getElementById('shot').src = "/static/"+$scope.model.q.person_name+".png";
                     $scope.model.initialData = $scope.model.q.person_name;
 
