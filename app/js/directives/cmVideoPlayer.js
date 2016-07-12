@@ -6,7 +6,7 @@ angular.module('myApp.directives')
 		return {
 			restrict: 'A',
 			link: function (scope, element) {
-				scope.model.play_state = false;
+				scope.model.play_state = true;
 				scope.model.current_time = 0;
 				scope.model.restrict_toggle = 0;
 				scope.model.infbndsec = 0;
@@ -45,7 +45,7 @@ angular.module('myApp.directives')
 						});
 					});
 
-				scope.model.play_label = "Play";
+				scope.model.play_label = "Pause";
 
 				element[0].addEventListener("loadedmetadata", function () {
 					scope.$apply(function () {
