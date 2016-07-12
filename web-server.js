@@ -200,6 +200,8 @@ function create_config_route(queues, callback) {
 
 function create_images_database(callback) {
 
+    if(!fs.existsSync("app/static")) fs.mkdirSync("app/static");
+
     async.waterfall([
         log_in,
         getNames
