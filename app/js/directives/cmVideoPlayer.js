@@ -47,7 +47,7 @@ angular.module('myApp.directives')
 
 				scope.model.play_label = "Pause";
 
-				element[0].addEventListener("loadedmetadata", function () {
+				element[0].addEventListener("loadeddata", function () {
 					scope.$apply(function () {
 
 						scope.model.duration = scope.model.fullDuration = element[0].duration;
