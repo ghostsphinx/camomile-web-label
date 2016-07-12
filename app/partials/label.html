@@ -150,6 +150,7 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                         <div class="btn-group btn-group-justified" role="group" aria-label="...">
                               <div class="btn-group" role="group">
                                   <button type="button" id="confirm" class="btn btn-success btn-lg" ng-click="model.saveQueueElement('talking_face')"
+                                          tooltip-title="BOTH visible AND speaking"
                                           data-toggle="popover"
                                           title="BOTH visible AND speaking"
                                           data-placement="top"
@@ -160,6 +161,7 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                               </div>
                               <div class="btn-group" role="group">
                                  <button type="button" id="btn" class="btn btn-warning btn-lg" ng-click="model.saveQueueElement('face')"
+                                         tooltip-title="Visible but NOT speaking"
                                          data-toggle="popover"
                                          title="Visible but NOT speaking"
                                          data-placement="top"
@@ -170,6 +172,7 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                              </div>
                              <div class="btn-group" role="group">
                                  <button type="button" id="btnno" class="btn btn-danger btn-lg" ng-click="model.saveQueueElement('no')"
+                                         tooltip-title="NOT visible"
                                          data-toggle="popover"
                                          title="NOT visible"
                                          data-placement="top"
@@ -180,6 +183,7 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                              </div>
                               <div class="btn-group" role="group">
                                   <button type="button" id="btndk" class="btn btn-default btn-lg" ng-click="model.saveQueueElement('?')"
+                                          tooltip-title="I don't know"
                                           data-toggle="popover"
                                           title="I don't know"
                                           data-placement="top"
