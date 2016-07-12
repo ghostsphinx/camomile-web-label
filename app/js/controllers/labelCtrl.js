@@ -84,7 +84,7 @@ angular.module('myApp.controllers')
                             $scope.model.restrict_toggle = 2;
                             $scope.model.current_time_temp = $scope.model.q.start;
                             var delta = $scope.model.q.end - $scope.model.q.start;
-                            var offset = 0.5;
+                            var offset = 0.2;
                             $scope.model.infbndsec = parseFloat($scope.model.q.start+offset || 0);
                             if ($scope.model.infbndsec < 0) {
                                 $scope.model.infbndsec = 0;
@@ -98,8 +98,6 @@ angular.module('myApp.controllers')
                             $scope.$apply(function () {
                                 $scope.model.current_time = $scope.model.q.start+offset;
                             });
-
-                            document.getElementById('player').play();
 
                         });
                 });
@@ -142,7 +140,7 @@ angular.module('myApp.controllers')
             };
 
             $document.on(
-                "keydown",
+                "keyup",
                 function (event) {
                     var targetID = event.target.id;
                     var button_checked = false;
@@ -175,6 +173,10 @@ angular.module('myApp.controllers')
                             //$scope.model.saveQueueElement(false);
                         });
                     }
+                });
+            $document.on(
+                "keydown",
+                function (event) {
                     //Left
                     if (event.keyCode == 37) {
                         $scope.$apply(function () {
