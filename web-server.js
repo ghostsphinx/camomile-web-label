@@ -103,35 +103,7 @@ function getQueueByName(name, callback) {
         });
 };
 
-function getNames(callback) {
 
-    var options = {
-        url: camomile_api + '/corpus/576cf836f09c8001005c29db/metadata/annotation.evidence.',
-        method: 'GET',
-        json: true,
-    };
-
-    request(
-        options,
-        function (error, response, body) {
-            callback(body);
-        });
-};
-
-function getPngCode(name, callback) {
-
-    var options = {
-        url: camomile_api + '/corpus/576cf836f09c8001005c29db/metadata/annotation.evidence.' + name  + '.0.image',
-        method: 'GET',
-        json: true,
-    };
-
-    request(
-        options,
-        function (error, response, body) {
-            callback(name, body);
-        });
-};
 
 function getAllQueues(callback) {
 
@@ -188,37 +160,6 @@ function create_config_route(queues, callback) {
 
 }
 
-function create_images_database(callback) {
-
-    if(!fs.existsSync("app/static")) fs.mkdirSync("app/static");
-
-    async.waterfall([
-        log_in,
-        getNames
-        ],function(names_list, callback){
-            var name, cpt = 0;
-            async.each(names_list,function(name, callback){
-                if(cpt<names_list.length){
-                    async.waterfall([
-                        async.apply(getPngCode, name)
-                        ],function(name, png){
-                            var b64 = png.data.replace(/^data:image\/png;base64,/,"");
-                            fs.writeFile('app/static/'+name+'.png',b64,"base64");
-                        });
-                    cpt++;
-                }
-                else callback()
-            }, function(err){
-                if(err){
-                    console.log("Problem fetching images")
-                }
-            });
-
-            },function(err){
-                callback(null);
-            });
-    callback(null);
-};
 
 // create AngularJS module 'Config' in /app/config.js ('DataRoot' + 'ToolRoot')
 // and callback (passing no results whatsoever)
@@ -230,7 +171,6 @@ function create_config_file(callback) {
     //         .value('DataRoot', 'http://camomile.fr/api')
     //         .value('ToolRoot', 'http://pyannote.lu');
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
     async.waterfall([
         function(callback){
@@ -260,44 +200,119 @@ function create_config_file(callback) {
     callback(null);
 };
 
+
+var CORPUS_ID = '576cf836f09c8001005c29db';
+
+// Returns a function that
+// * takes no input
+// * retrieves the list of names
+// * passes it to a callback
+var get_get_names = function(corpus_id) {
+  return function(callback) {
+      console.log('Retrieving list of names.');
+
+      var options = {
+          url: camomile_api + '/corpus/' + corpus_id + '/metadata/annotation.evidence.',
+          method: 'GET',
+          json: true,
+      };
+      request(
+          options,
+          function (error, response, names) {
+              callback(null, names);
+          });
+  };
+};
+
+// Returns a function that
+// * takes a name as input
+// * retrieves the content of the correspond image
+// * saves it to disk
+// * calls the callback
+
+var get_get_one_image = function(corpus_id) {
+  return function(name, callback) {
+    console.log('Retrieving image for ' + name);
+
+    var options = {
+        url: camomile_api + '/corpus/' + corpus_id + '/metadata/annotation.evidence.' + name  + '.0.image',
+        method: 'GET',
+        json: true,
+    };
+
+    request(
+        options,
+        function (error, response, image) {
+          if (error) {
+            console.log('Error when retrieving image for ' + name + '.')
+            callback(error);
+          } else {
+            var b64 = image.data.replace(/^data:image\/png;base64,/,"");
+            fs.writeFileSync('app/static/' + name + '.png', b64, 'base64');
+            console.log('Successfully retrieved and saved image for ' + name + '.')
+            callback(null, name);
+          }
+        });
+  };
+};
+
+// Returns a function that
+// * takes a list of name as input
+// * retrieves and saves all of them in parallel
+// * calls the callbach
+
+var get_get_all_images = function(corpus_id) {
+  return function(names, callback) {
+    console.log('Retrieving all images.')
+
+    async.eachLimit(
+      names,  // list of names
+      10,     // at most 10 names at a time
+      get_get_one_image(CORPUS_ID),  // function that retrieves and saves image
+      function (err) {
+        if (err) {
+          console.log('Error when retrieving and/or saving images');
+          callback(err);
+        } else {
+          console.log('Successfully retrieved and saved all images.');
+          callback(null);
+        }
+      }
+    );
+  };
+};
+
+var create_static_dir = function(callback) {
+  if (!fs.existsSync("app/static")) {
+    fs.mkdirSync("app/static");
+  }
+  callback();
+};
+
+
+// Function that
+// * logs in
+// * refresh all images
+// * logs out
+var refresh_images = function() {
+  async.waterfall(
+    [log_in, create_static_dir, get_get_names(CORPUS_ID), get_get_all_images(CORPUS_ID), log_out]
+  );
+};
+
 // run app when everything is set up
 function run_app(err, results) {
     app.listen(port);
     console.log('App is running at http://localhost:' + port + ' with');
     console.log('   * Camomile API --> ' + camomile_api);
-
-    setInterval(function(){
-        async.waterfall([
-        log_in,
-        getNames
-        ],function(names_list, callback){
-            var name, cpt = 0;
-            async.each(names_list,function(name, callback){
-                if(cpt<names_list.length){
-                    async.waterfall([
-                        async.apply(getPngCode, name)
-                        ],function(name, png){
-                            var b64 = png.data.replace(/^data:image\/png;base64,/,"");
-                            fs.writeFile('app/static/'+name+'.png',b64,"base64");
-                        });
-                    cpt++;
-                    if(cpt==10) console.log("Images database refreshed.");
-                }
-                else callback()
-            }, function(err){
-                if(err){
-                    console.log("Problem fetching images")
-                }
-            });
-        });
-    },300000);
-
+    refresh_images();
+    setInterval(refresh_images, 300000);  // refresh images every once in a while
 };
 
 // this is where all these functions are actually called, in this order:
 // log in, create queues, create route /config, log out, create /app/config.js
 // and (then only) run the app
 async.waterfall(
-    [log_in, getAllQueues, create_config_route, create_images_database, create_config_file, log_out],
+    [log_in, getAllQueues, create_config_route, create_config_file, log_out],
     run_app
 );
