@@ -73,16 +73,16 @@ angular.module('myApp.directives')
 						// if player paused,  has been changed for exogenous reasons
 						if (!element[0].paused) {
 							if (element[0].currentTime > scope.model.supbndsec) {
-                               					if (scope.model.loop === false) {
-                                    					scope.model.toggle_play(false);
-                                    					scope.model.current_time = scope.model.supbndsec;
-                                				}else {
-                                    					scope.model.toggle_play(true);
-                                    					scope.model.current_time = scope.model.infbndsec;
-                               				}
-                            			} else {
-                                			scope.model.current_time = element[0].currentTime;
-                            				}	
+                               	if (scope.model.loop === false) {
+                                    scope.model.toggle_play(false);
+                                    scope.model.current_time = scope.model.supbndsec;
+                                }else {
+                                    scope.model.toggle_play(true);
+                                    scope.model.current_time = scope.model.infbndsec;
+                               	}
+                            } else {
+                                scope.model.current_time = element[0].currentTime;
+                            }	
 						}
 					});
 				});
@@ -90,7 +90,7 @@ angular.module('myApp.directives')
 				scope.$watch("model.current_time", function (newValue) {
 					if (newValue !== undefined  && element[0].id != "thumbnail") {
 						scope.model.current_time_display = DateUtils.timestampFormat(DateUtils.parseDate(scope.model.current_time));
-						if (element[0].readyState !== 0) {
+						if (element[0].readyState == 4) {
 							element[0].currentTime = newValue;
 						}
 					}
