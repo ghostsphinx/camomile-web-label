@@ -10,31 +10,21 @@ var express = require("express"),
 var YAML = require('yamljs');
 var fermata = require('fermata');
 var camomileClient = require('./camomile');
- 
+
 // remember cookie
 var request = request.defaults({
     jar: true
 });
 
-// read parameters from command line or from environment variables 
+// read parameters from command line or from environment variables
 // (CAMOMILE_API, CAMOMILE_LOGIN, CAMOMILE_PASSWORD, PYANNOTE_API)
 
 // PBR patch : support parametrized shotIn and shotOut
 program
     .option('--config <path>', 'path of the configuration file (e.g. ./config.yml)')
-    /*.option('--camomile <url>', 'URL of Camomile server (e.g. https://camomile.fr/api)')
-    .option('--login <login>', 'Login for Camomile server (for queues creation)')
-    .option('--password <password>', 'Password for Camomile server')
-    .option('--pyannote <url>', 'URL of PyAnnote server (e.g. https://camomile.fr/tool)')
-    .option('--port <int>', 'Local port to listen to (default: 8070)')*/
     .parse(process.argv);
 
-/*var camomile_api = program.camomile || process.env.CAMOMILE_API;
-var login = program.login || process.env.CAMOMILE_LOGIN;
-var password = program.password || process.env.CAMOMILE_PASSWORD;
-var pyannote_api = program.pyannote || process.env.PYANNOTE_API;
-var port = parseInt(program.port || process.env.PORT || '8070', 10);*/
-yamlObject = YAML.load(program.config);
+var yamlObject = YAML.load(program.config);
 var camomile_api = 'http://' + yamlObject.camomile.host;
 var login = yamlObject.camomile.username;
 var password = yamlObject.camomile.password;
@@ -243,15 +233,10 @@ function create_config_file(callback) {
 
 
     async.waterfall([
-        /*function(callback){
-            var list;
-            camomileClient.getCorpusMetadataKeys('576cf826f09c8001005c29db',"path=annotation.evidence", callback(null,list));
-        },*/
-        function(/*list,*/ callback){
+        function(callback){
             config_js = sprintf(
                 "angular.module('myApp.config', [])" + "\n" +
-                "   .value('DataRoot', '%s')" ,//+ "\n" +
-                //"   .value('AutocompleteNames', '%s');",
+                "   .value('DataRoot', '%s')",
                 camomile_api//, list
             );
             callback(null,config_js);
@@ -280,8 +265,6 @@ function run_app(err, results) {
     app.listen(port);
     console.log('App is running at http://localhost:' + port + ' with');
     console.log('   * Camomile API --> ' + camomile_api);
-    //console.log('   * PyAnnote API --> ' + pyannote_api);
-    //console.log(yamlObject.camomile);
 
     setInterval(function(){
         async.waterfall([
