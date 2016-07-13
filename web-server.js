@@ -201,7 +201,7 @@ function create_config_file(callback) {
     callback(null);
 };
 
-var get_get_corpus_id_by_name = function(name){
+var get_get_corpus_id = function(name){
     return function(callback){
         var options = {
             url: camomile_api + '/corpus',
@@ -214,13 +214,14 @@ var get_get_corpus_id_by_name = function(name){
 
         request(
             options,
-            function (error, response, body) {
-                if (body.length === 0) {
+            function (error, response, corpora) {
+                if (error || corpora.length === 0) {
+                    console.log('ERROR | could not find campaign corpus');
                     corpus_id = undefined;
                 } else {
-                    corpus_id = body[0]._id;
+                    corpus_id = corpora[0]._id;
                 };
-                callback(null, corpus_id);
+                callback(error, corpus_id);
             });
     }
 };
@@ -231,7 +232,6 @@ var get_get_corpus_id_by_name = function(name){
 // * passes it to a callback
 var get_get_names = function() {
   return function(corpus_id, callback) {
-      //console.log('Retrieving list of names.');
       var options = {
           url: camomile_api + '/corpus/' + corpus_id + '/metadata/annotation.evidence.',
           method: 'GET',
@@ -240,7 +240,10 @@ var get_get_names = function() {
       request(
           options,
           function (error, response, names) {
-              callback(null, names, corpus_id);
+              if (error) {
+                console.log('ERROR | could not retrieve list of names')
+              }
+              callback(error, names, corpus_id);
           });
   };
 };
@@ -253,7 +256,6 @@ var get_get_names = function() {
 
 var get_get_one_image = function(corpus_id) {
   return function(name, callback) {
-    //console.log('Retrieving image for ' + name);
 
     var options = {
         url: camomile_api + '/corpus/' + corpus_id + '/metadata/annotation.evidence.' + name  + '.0.image',
@@ -265,12 +267,11 @@ var get_get_one_image = function(corpus_id) {
         options,
         function (error, response, image) {
           if (error) {
-            console.log('Error when retrieving image for ' + name + '.')
+            console.log('ERROR | could not retrieve image for ' + name + '.')
             callback(error);
           } else {
             var b64 = image.data.replace(/^data:image\/png;base64,/,"");
             fs.writeFileSync('app/static/' + name + '.png', b64, 'base64');
-            //console.log('Successfully retrieved and saved image for ' + name + '.')
             callback(null, name);
           }
         });
@@ -284,18 +285,16 @@ var get_get_one_image = function(corpus_id) {
 
 var get_get_all_images = function() {
   return function(names, corpus_id, callback) {
-    console.log('Retrieving all images.')
-
     async.eachLimit(
       names,  // list of names
       10,     // at most 10 names at a time
       get_get_one_image(corpus_id),  // function that retrieves and saves image
       function (err) {
         if (err) {
-          console.log('Error when retrieving and/or saving images');
+          console.log('ERROR | could not retrieve and/or save images');
           callback(err);
         } else {
-          console.log('Successfully retrieved and saved all images.');
+          console.log('SUCCESS | ' + names.length + ' images');
           callback(null);
         }
       }
@@ -317,7 +316,7 @@ var create_static_dir = function(callback) {
 // * logs out
 var refresh_images = function() {
   async.waterfall(
-    [log_in, create_static_dir, get_get_corpus_id_by_name(campaign_name), get_get_names(), get_get_all_images(), log_out]
+    [log_in, create_static_dir, get_get_corpus_id(campaign_name), get_get_names(), get_get_all_images(), log_out]
   );
 };
 
