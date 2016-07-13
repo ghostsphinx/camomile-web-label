@@ -28,6 +28,7 @@ var yamlObject = YAML.load(program.config);
 var camomile_api = 'http://' + yamlObject.camomile.host;
 var login = yamlObject.camomile.username;
 var password = yamlObject.camomile.password;
+var campaign_name = yamlObject.campaign.name;
 var port = 8070;
 
 // configure express app
@@ -200,17 +201,37 @@ function create_config_file(callback) {
     callback(null);
 };
 
+var get_get_corpus_id_by_name = function(name){
+    return function(callback){
+        var options = {
+            url: camomile_api + '/corpus',
+            method: 'GET',
+            qs: {
+                name: name
+            },
+            json: true,
+        };
 
-var CORPUS_ID = '576cf836f09c8001005c29db';
+        request(
+            options,
+            function (error, response, body) {
+                if (body.length === 0) {
+                    corpus_id = undefined;
+                } else {
+                    corpus_id = body[0]._id;
+                };
+                callback(null, corpus_id);
+            });
+    }
+};
 
 // Returns a function that
 // * takes no input
 // * retrieves the list of names
 // * passes it to a callback
-var get_get_names = function(corpus_id) {
-  return function(callback) {
-      console.log('Retrieving list of names.');
-
+var get_get_names = function() {
+  return function(corpus_id, callback) {
+      //console.log('Retrieving list of names.');
       var options = {
           url: camomile_api + '/corpus/' + corpus_id + '/metadata/annotation.evidence.',
           method: 'GET',
@@ -219,7 +240,7 @@ var get_get_names = function(corpus_id) {
       request(
           options,
           function (error, response, names) {
-              callback(null, names);
+              callback(null, names, corpus_id);
           });
   };
 };
@@ -232,7 +253,7 @@ var get_get_names = function(corpus_id) {
 
 var get_get_one_image = function(corpus_id) {
   return function(name, callback) {
-    console.log('Retrieving image for ' + name);
+    //console.log('Retrieving image for ' + name);
 
     var options = {
         url: camomile_api + '/corpus/' + corpus_id + '/metadata/annotation.evidence.' + name  + '.0.image',
@@ -249,7 +270,7 @@ var get_get_one_image = function(corpus_id) {
           } else {
             var b64 = image.data.replace(/^data:image\/png;base64,/,"");
             fs.writeFileSync('app/static/' + name + '.png', b64, 'base64');
-            console.log('Successfully retrieved and saved image for ' + name + '.')
+            //console.log('Successfully retrieved and saved image for ' + name + '.')
             callback(null, name);
           }
         });
@@ -261,14 +282,14 @@ var get_get_one_image = function(corpus_id) {
 // * retrieves and saves all of them in parallel
 // * calls the callbach
 
-var get_get_all_images = function(corpus_id) {
-  return function(names, callback) {
+var get_get_all_images = function() {
+  return function(names, corpus_id, callback) {
     console.log('Retrieving all images.')
 
     async.eachLimit(
       names,  // list of names
       10,     // at most 10 names at a time
-      get_get_one_image(CORPUS_ID),  // function that retrieves and saves image
+      get_get_one_image(corpus_id),  // function that retrieves and saves image
       function (err) {
         if (err) {
           console.log('Error when retrieving and/or saving images');
@@ -296,7 +317,7 @@ var create_static_dir = function(callback) {
 // * logs out
 var refresh_images = function() {
   async.waterfall(
-    [log_in, create_static_dir, get_get_names(CORPUS_ID), get_get_all_images(CORPUS_ID), log_out]
+    [log_in, create_static_dir, get_get_corpus_id_by_name(campaign_name), get_get_names(), get_get_all_images(), log_out]
   );
 };
 
