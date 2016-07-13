@@ -128,6 +128,10 @@ angular.module('myApp.controllers')
                 item.output.status = status;
 
                 document.getElementById('shot').src = "../img/default.jpg";
+                document.getElementById('confirm').blur();
+                document.getElementById('btn').blur();
+                document.getElementById('btnno').blur();
+                document.getElementById('btndk').blur();
 
                 camomileService.enqueue($scope.model.outgoingQueue, item, function (err, data) {
 
