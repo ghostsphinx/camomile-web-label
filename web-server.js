@@ -210,7 +210,6 @@ function create_images_database(callback) {
             async.each(names_list,function(name, callback){
                 if(cpt<names_list.length){
                     async.waterfall([
-                        log_in,
                         async.apply(getPngCode, name)
                         ],function(name, png){
                             var b64 = png.data.replace(/^data:image\/png;base64,/,"");
@@ -293,7 +292,6 @@ function run_app(err, results) {
             async.each(names_list,function(name, callback){
                 if(cpt<names_list.length){
                     async.waterfall([
-                        log_in,
                         async.apply(getPngCode, name)
                         ],function(name, png){
                             var b64 = png.data.replace(/^data:image\/png;base64,/,"");
