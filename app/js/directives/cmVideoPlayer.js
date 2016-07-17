@@ -8,12 +8,12 @@ angular.module('myApp.directives')
 			link: function (scope, element) {
 				scope.model.play_state = true;
 				scope.model.current_time = 0;
-				scope.model.restrict_toggle = 0;
 				scope.model.infbndsec = 0;
 				scope.model.loop = true;
-				scope.model.loop_display = function() {
-                  			scope.model.loop = !scope.model.loop;
-                		};
+
+        scope.model.loop_display = function() {
+          scope.model.loop = !scope.model.loop;
+        };
 
 				scope.model.toggle_play = function (value) {
 					if (scope.model.play_state !== undefined) {
@@ -31,77 +31,28 @@ angular.module('myApp.directives')
 					}
 				};
 
-				var save_state;
-
-				$('#seek-bar').on('mousedown',function () {
-					save_state = scope.model.play_state;
-					scope.$apply(function () {
-						scope.model.toggle_play(false);
-					});
-
-				}).on('mouseup', function () {
-						scope.$apply(function () {
-							scope.model.toggle_play(save_state);
-						});
-					});
-
-				scope.model.play_label = "Pause";
-
 				element[0].addEventListener("loadeddata", function () {
 					scope.$apply(function () {
-
-						scope.model.duration = scope.model.fullDuration = element[0].duration;
-
 						element[0].currentTime = scope.model.current_time;
-						if (scope.model.supbndsec === undefined) {
-							scope.model.supbndsec = scope.model.duration;
-						}
-
-						// used to force the time-line to adapt its min/max
-						scope.model.reinit_video_size = true;
-
-						// Remove previous brush and update it with new layers
-						// update and remove should be triggered when handling reinit_video_size change
-						// player is agnostic of any brush or whatsoever
-						//scope.model.brushUpdate = true;
-						//scope.model.brushRemove = true;
 					});
 				});
 
 				element[0].addEventListener("timeupdate", function () {
 					scope.$apply(function () {
-						// if player paused,  has been changed for exogenous reasons
-						if (!element[0].paused) {
-							if (element[0].currentTime > scope.model.supbndsec) {
-                               	if (scope.model.loop === false) {
-                                    scope.model.toggle_play(false);
-                                    scope.model.current_time = scope.model.supbndsec;
-                                }else {
-                                    scope.model.toggle_play(true);
-                                    scope.model.current_time = scope.model.infbndsec;
-                               	}
-                            } else {
-                                scope.model.current_time = element[0].currentTime;
-                            }	
-						}
+            var currentTime = element[0].currentTime;
+            scope.model.view_current_time = currentTime;
+            scope.model.current_time_display = DateUtils.timestampFormat(
+                DateUtils.parseDate(currentTime));
+						if (currentTime > scope.model.supbndsec) {
+                  scope.model.toggle_play(false);
+                  element[0].currentTime = scope.model.infbndsec;
+                  scope.model.toggle_play(true);
+              }
 					});
 				});
 
-				scope.$watch("model.current_time", function (newValue) {
-					if (newValue !== undefined  && element[0].id != "thumbnail") {
-						scope.model.current_time_display = DateUtils.timestampFormat(DateUtils.parseDate(scope.model.current_time));
-						if (element[0].readyState == 4) {
-							element[0].currentTime = newValue;
-						}
-					}
-				});
-
-				scope.$watch("model.play_state", function (newValue) {
-					if (newValue) {
-						scope.model.play_label = "Pause";
-					} else {
-						scope.model.play_label = "Play";
-					}
+				scope.$watch("model.current_time", function (currentTime_new) {
+          element[0].currentTime = currentTime_new;
 				});
 
 			}
