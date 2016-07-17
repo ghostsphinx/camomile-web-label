@@ -326,7 +326,7 @@ function run_app(err, results) {
     console.log('App is running at http://localhost:' + port + ' with');
     console.log('   * Camomile API --> ' + camomile_api);
     refresh_images();
-    setInterval(refresh_images, 300000);  // refresh images every once in a while
+    setInterval(refresh_images, 60 * 60 * 1000);  // refresh images every hour
 };
 
 // this is where all these functions are actually called, in this order:
