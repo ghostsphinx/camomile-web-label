@@ -11,9 +11,9 @@ angular.module('myApp.directives')
 				scope.model.infbndsec = 0;
 				scope.model.loop = true;
 
-        scope.model.loop_display = function() {
-          scope.model.loop = !scope.model.loop;
-        };
+        		scope.model.loop_display = function() {
+        		  scope.model.loop = !scope.model.loop;
+        		};
 
 				scope.model.toggle_play = function (value) {
 					if (scope.model.play_state !== undefined) {
@@ -39,20 +39,19 @@ angular.module('myApp.directives')
 
 				element[0].addEventListener("timeupdate", function () {
 					scope.$apply(function () {
-            var currentTime = element[0].currentTime;
-            scope.model.view_current_time = currentTime;
-            scope.model.current_time_display = DateUtils.timestampFormat(
-                DateUtils.parseDate(currentTime));
+            			var currentTime = element[0].currentTime;
+            			scope.model.view_current_time = currentTime;
+            			scope.model.current_time_display = DateUtils.timestampFormat(DateUtils.parseDate(currentTime));
 						if (currentTime > scope.model.supbndsec) {
-                  scope.model.toggle_play(false);
-                  element[0].currentTime = scope.model.infbndsec;
-                  scope.model.toggle_play(true);
-              }
+                  			scope.model.toggle_play(false);
+                  			element[0].currentTime = scope.model.infbndsec;
+                  			scope.model.toggle_play(true);
+              			}
 					});
 				});
 
 				scope.$watch("model.current_time", function (currentTime_new) {
-          element[0].currentTime = currentTime_new;
+          			element[0].currentTime = currentTime_new;
 				});
 
 			}
