@@ -124,7 +124,7 @@ rect.legend, rect.barchart-bar, rect.node {
     display: block;
 }
 
-/*#video-controls {
+#video-controls {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -134,11 +134,11 @@ rect.legend, rect.barchart-bar, rect.node {
     transition: opacity .3s;
     color: white;
 }
-*/
-/*#video-container:hover #video-controls {
+
+#video-container:hover #video-controls {
     opacity: .9;
 }
-*/
+
 button.video-control {
     background: rgba(0,0,0,.5);
     border: 0;
@@ -162,10 +162,10 @@ button.video-control {
     color: white;
 }
 */
-/*#video-container:hover .controls {
+#video-container:hover .controls {
     opacity: .9;
 }
-*/
+
 /*#controlsvg {
     background: #FFF;
     display:block;
