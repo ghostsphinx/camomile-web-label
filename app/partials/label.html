@@ -115,14 +115,14 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                             </div>
                         </div>
                         <div class="col-md-8 col-xs-12">
-                            <div id="video-container"
+                            <div id="video-container" overflow="hidden"
                                 data-toggle="popover" title="Video" data-placement="left"
                                 data-content="Watch this video entirely (as the person might be speaking somewhere else in the video)"
                                 data-trigger="manual" ng-mouseup="model.updateValidInput()">
-                                <video id="player" cm-video-player ng-src={{model.video}} height="360px" autoplay loop></video>
+                                <video id="player" cm-video-player ng-src={{model.video}} height="auto" width="100%" autoplay loop></video>
                                 <div class="controls">
                                     <div class="row">
-                                        <div class="col-md-8">
+                                        <div class="col-md-9">
                                             <div id="control-bar" title="Drag to reference frame">
                                                 <div id="controlsoverlay">
                                                     <input width="100%" id="seek-bar"
@@ -134,7 +134,7 @@ Starting up http-server, serving __ROOTDIR__ on: http://0.0.0.0:8080</pre>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                           <label>{{ model.current_time_display }}</label>
                                         </div>
                                     </div>
