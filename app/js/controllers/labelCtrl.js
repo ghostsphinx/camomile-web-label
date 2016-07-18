@@ -107,7 +107,7 @@ angular.module('myApp.controllers')
                 item.input.medium_id = $scope.model.q.medium_id;
                 item.input.person_name = $scope.model.initialData;
                 item.input.start = $scope.model.q.start;
-                item.input.start = $scope.model.q.start;
+                item.input.end = $scope.model.q.end;
 
                 item.output = {};
                 item.output.status = status;
@@ -117,6 +117,7 @@ angular.module('myApp.controllers')
                 document.getElementById('btn').blur();
                 document.getElementById('btnno').blur();
                 document.getElementById('btndk').blur();
+                $('#shotImage').tooltip('destroy');
 
                 camomileService.enqueue($scope.model.outgoingQueue, item, function (err, data) {
 
